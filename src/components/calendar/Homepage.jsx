@@ -68,7 +68,17 @@ export default function Homepage({ events }) {
         {/* 絞り込んだイベントだけをEventCardで表示する */}
         {filteredEvents.length > 0 ? (
           filteredEvents.map(event => (
-            <EventCard key={event.id} event={event} />
+            <EventCard
+              key={event.id}
+              eventId={event.id}
+              eventName={event.name}
+              eventCategory={event.category}
+              eventArea={event.area}
+              eventShortDescription={event.short_description}
+              eventStartDatetime={event.start_dattime}
+              eventEndDatetime={event.end_dattime}
+              eventImageUrl={event.image_url}
+            />
           ))
         ) : (
           <p>この日のイベントはありません。</p>
