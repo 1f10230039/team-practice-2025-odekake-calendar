@@ -12,7 +12,7 @@ export default async function Page() {
 
   // データ取得中にエラーが発生した場合の処理
   if (error) {
-    console.error("観光地データの取得に失敗しました:", error.message);
+    console.error("イベントデータの取得に失敗しました:", error.message);
     notFound();
   }
 

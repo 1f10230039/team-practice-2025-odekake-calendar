@@ -24,7 +24,6 @@ import styled from "@emotion/styled";
 // --- Emotionでスタイルを定義 ---
 // カレンダー全体を包むスタイル
 const CalendarContainer = styled.div`
-  padding: 16px;
   background-color: #fff;
   width: 100%;
   max-width: 380px;
@@ -182,7 +181,6 @@ export default function Calendar({ selectedDate, onDateChange, events }) {
           }
         });
       }
-
       return acc; // 最終的に { '2025-09-08': ['祭り'], '2025-09-15': ['スポーツ', '教育'] } のようなオブジェクトが出来上がる
     }, {});
   }, [events]); // []の中にあるeventsが変わった時だけ、この中の処理が実行される

@@ -1,6 +1,8 @@
 // クライアントサイドで動作することを宣言
 "use client";
-
+// ページ遷移用Linkコンポーネントをインポート
+import Link from "next/link";
+// Emotionのstyledをインポート
 import styled from "@emotion/styled";
 // 日付のフォーマットを整えるためにdate-fnsからformatをインポート
 import { format } from "date-fns";
@@ -80,14 +82,21 @@ const CategoryTag = styled.p`
 // 開催日時を表示する部分のスタイル
 const DateTime = styled.p`
   margin: 0 0 8px 0;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
+  color: #777;
+`;
+
+// 開催場所を表示する部分のスタイル
+const EventArea = styled.p`
+  margin: 0 0 8px 0;
+  font-size: 0.6rem;
   color: #777;
 `;
 
 // 短い説明文のスタイル
 const Description = styled.p`
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.6rem;
   color: #555;
   line-height: 1.5;
 `;
@@ -95,12 +104,32 @@ const Description = styled.p`
 /**
  * イベント情報を表示するカードコンポーネント
  * @param {{ event: object }} props - 表示するイベントのデータ
+ * @param {string} props.eventId - イベントの一意なID(詳細ページへのリンクに使用)
+ * @param {string} props.eventName - イベントの名前
+ * @param {string} props.eventArea - イベントのエリア(例：市役所前)
+ * @param {string} props.eventCategory - イベントのカテゴリー
+ * @param {string} props.eventShortDescription - 観光地の短い説明文
+ * @param {int8} props.eventStartDatetime - イベントの開始日時
+ * @param {int8} props.eventEndDatetime - イベントの終了日時
+ * @param {string} props.eventImageUrl - 観光地の画像URL
+ * @returns {JSX.Element} レンダリングされる観光地カードコンポーネント
  */
 export default function EventCard({ event }) {
+  // eventオブジェクトから、必要な情報を取り出す
+  const {
+    id,
+    name,
+    area,
+    category,
+    short_description,
+    start_datetime,
+    end_datetime,
+    image_url,
+  } = event;
   // カテゴリ名に対応する背景色とボーダー色を取得する。なければ「その他」の色を使う
-  const bgColor = categoryColors[event.category] || categoryColors["その他"];
-  const borderColor =
-    categoryBorderColors[event.category] || categoryBorderColors["その他"];
+  const categoryName = category || "その他";
+  const bgColor = categoryColors[categoryName];
+  const borderColor = categoryBorderColors[categoryName];
 
   // 日付のフォーマットを整える関数
   const formatDateTime = datetime => {
@@ -110,21 +139,23 @@ export default function EventCard({ event }) {
   };
 
   return (
-    // CardWrapperに、計算した色をpropsとして渡す
-    <CardWrapper bgColor={bgColor} borderColor={borderColor}>
-      {/* イベント画像を表示。altは画像が表示されない時のための説明文 */}
-      <EventImage src={event.image_url} alt={event.name} />
+    <Link href={`/event/${id}`}>
+      {/* CardWrapperに、計算した色をpropsとして渡す */}
+      <CardWrapper bgColor={bgColor} borderColor={borderColor}>
+        {/* イベント画像を表示。altは画像が表示されない時のための説明文 */}
+        <EventImage src={image_url} alt={name} />
 
-      <ContentWrapper>
-        <EventTitle>{event.name}</EventTitle>
-        <CategoryTag>{event.category || "その他"}</CategoryTag>
-        {/* 開始日時と終了日時をきれいにフォーマットして表示 */}
-        <DateTime>
-          {formatDateTime(event.start_datetime)} ~{" "}
-          {formatDateTime(event.end_datetime)}
-        </DateTime>
-        <Description>{event.short_description}</Description>
-      </ContentWrapper>
-    </CardWrapper>
+        <ContentWrapper>
+          <EventTitle>{categoryName}</EventTitle>
+          <CategoryTag>{categoryName || "その他"}</CategoryTag>
+          {/* 開始日時と終了日時をきれいにフォーマットして表示 */}
+          <DateTime>
+            {formatDateTime(start_datetime)} ~ {formatDateTime(end_datetime)}
+          </DateTime>
+          <EventArea>{area}</EventArea>
+          <Description>{short_description}</Description>
+        </ContentWrapper>
+      </CardWrapper>
+    </Link>
   );
 }
