@@ -1,22 +1,21 @@
-// クライアントサイドで動作する
-"use client";
-import styled from "@emotion/styled";
-
-// --- Emotionでスタイルを定義 ---
-const PageWrapper = styled.div`
-  padding: 20px;
-  text-align: center;
-`;
+// Supabaseクライアントのインスタンスをインポート
+import { supabase } from "../../utils/supabase";
+// データを表示するためのクライアントコンポーネントをインポート
+import Homepage from "@/components/calendar/Homepage";
 
 /**
- * AIチャットページのコンポーネント
- * @returns {JSX.Element}
+ * カレンダーコンポーネントとイベントカードコンポーネントを生成するサーバーコンポーネント
  */
-export default function Calender() {
-  return (
-    <PageWrapper>
-      <h1>カレンダー</h1>
-      <p>ここにカレンダー画面が表示されます。</p>
-    </PageWrapper>
-  );
+export default async function Page() {
+  // 'events'テーブルからデータをすべて選択
+  const { data: events, error } = await supabase.from("events").select("*");
+
+  // データ取得中にエラーが発生した場合の処理
+  if (error) {
+    console.error("観光地データの取得に失敗しました:", error.message);
+    notFound();
+  }
+
+  // 取得したデータをクライアントコンポーネントのHomepageに渡して、ページをレンダリング
+  return <Homepage events={events || []} />;
 }
