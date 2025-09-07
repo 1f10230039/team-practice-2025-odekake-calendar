@@ -5,7 +5,6 @@ import styled from "@emotion/styled";
 
 // --- Emotionでスタイルを定義 ---
 // ヘッダー全体を囲むコンテナースタイル
-// ヘッダー全体を囲むコンテナースタイル
 const HeaderWrapper = styled.header`
   background-color: #ffffff;
   height: 60px;
