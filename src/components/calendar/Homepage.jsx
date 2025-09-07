@@ -27,6 +27,9 @@ const HomepageWrapper = styled.main`
 const EventListContainer = styled.div`
   width: 100%;
   max-width: 500px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f9f9f9;
 `;
 // イベント一覧の部分のスタイル
 const SectionTitle = styled.h2`

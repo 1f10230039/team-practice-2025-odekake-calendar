@@ -25,7 +25,7 @@ const DetailWrapper = styled.div`
   padding: 80px 16px 90px;
   background-color: #fff;
 `;
-
+// 画像のスタイル
 const MainImage = styled.img`
   width: 100%;
   height: 250px;
@@ -34,14 +34,14 @@ const MainImage = styled.img`
   margin-bottom: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 `;
-
+// イベント名のスタイル
 const Title = styled.h1`
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 12px;
   line-height: 1.4;
 `;
-
+// サブの情報を囲むdiv
 const SubInfo = styled.div`
   display: flex;
   align-items: center;
@@ -56,7 +56,15 @@ const SubInfo = styled.div`
     vertical-align: middle;
   }
 `;
-
+// 「基本情報」や「アクセス」などのセクションタイトル
+const SectionTitle = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #555;
+  margin: 48px 0 6px;
+  padding-bottom: 8px;
+`;
+// イベントの説明文のスタイル
 const Description = styled.p`
   font-size: 1rem;
   line-height: 1.8;
@@ -64,22 +72,22 @@ const Description = styled.p`
   white-space: pre-wrap; /* 改行をそのまま表示するための設定 */
   margin-bottom: 32px;
 `;
-
+// イベントの基本情報のテーブル
 const InfoTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 32px;
+  margin-bottom: 42px;
   font-size: 0.9rem;
 `;
-
+// イベントの基本情報のテーブルの行
 const TableRow = styled.tr`
   border-bottom: 1px solid #eee;
 `;
-
+// イベントの基本情報のテーブルの名前
 const TableHeader = styled.th`
   text-align: left;
-  padding: 12px 8px;
-  width: 100px;
+  padding: 18px 8px;
+  width: 110px;
   color: #777;
   vertical-align: top;
 
@@ -88,7 +96,7 @@ const TableHeader = styled.th`
     vertical-align: middle;
   }
 `;
-
+// イベントの基本情報のテーブルデータ
 const TableCell = styled.td`
   padding: 12px 8px;
   color: #333;
@@ -102,17 +110,17 @@ const TableCell = styled.td`
     }
   }
 `;
-
+// マップを囲むスタイル
 const MapWrapper = styled.div`
   h2 {
     font-size: 1.2rem;
     margin-bottom: 16px;
   }
 `;
-
+// マップのスタイル
 const MapIframe = styled.iframe`
   width: 100%;
-  height: 300px;
+  height: 600px;
   border: none;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -163,9 +171,10 @@ export default function EventDetail({ event }) {
           主催: {organizer || "不明"}
         </span>
       </SubInfo>
-
+      <SectionTitle>イベント詳細</SectionTitle>
       <Description>{long_description}</Description>
 
+      <SectionTitle>基本情報</SectionTitle>
       <InfoTable>
         <tbody>
           <TableRow>
@@ -218,8 +227,8 @@ export default function EventDetail({ event }) {
         </tbody>
       </InfoTable>
 
+      <SectionTitle>開催場所の地図</SectionTitle>
       <MapWrapper>
-        <h2>開催場所の地図</h2>
         <MapIframe src={googleMapUrl} allowFullScreen="" loading="lazy" />
       </MapWrapper>
     </DetailWrapper>
