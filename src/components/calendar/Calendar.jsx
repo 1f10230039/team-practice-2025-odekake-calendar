@@ -26,7 +26,6 @@ import styled from "@emotion/styled";
 const CalendarContainer = styled.div`
   background-color: #fff;
   width: 100%;
-  max-width: 380px;
   margin: 0 auto;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
