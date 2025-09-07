@@ -1,5 +1,7 @@
-// クライアントサイドで動作する
+// クライアントサイドで動作することを宣言
 "use client";
+// Next.jsからLinkをインポート
+import Link from "next/link";
 // Emotionのstyledをインポート
 import styled from "@emotion/styled";
 
@@ -26,8 +28,18 @@ const Title = styled.h1`
   font-size: 1.5rem;
   font-weight: bold;
 `;
+
+// Linkで囲ってもスタイルが崩れないようにする
+const UserIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
 // ユーザーアイコンのスタイル
-const UserIcon = styled.img``;
+const UserIcon = styled.img`
+  border-radius: 50%;
+`;
 /**
  * サイトのロゴやユーザーアイコンを表示させるヘッダーコンポーネント
  * @returns  {JSX.Element} ヘッダーコンポーネント
@@ -36,7 +48,12 @@ export default function Header() {
   return (
     <HeaderWrapper>
       <Title>北区イベントカレンダー</Title>
-      <UserIcon src="https://placehold.co/40x40/EFEFEF/3A3A3A?text=U" />
+      <Link href="/setting" passHref>
+        <UserIcon
+          src="https://placehold.co/40x40/EFEFEF/3A3A3A?text=U"
+          alt="ユーザーアイコン"
+        />
+      </Link>
     </HeaderWrapper>
   );
 }
