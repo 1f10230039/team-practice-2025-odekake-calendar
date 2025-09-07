@@ -146,7 +146,7 @@ export default function EventCard({ event }) {
         <EventImage src={image_url} alt={name} />
 
         <ContentWrapper>
-          <EventTitle>{categoryName}</EventTitle>
+          <EventTitle>{name}</EventTitle>
           <CategoryTag>{categoryName || "その他"}</CategoryTag>
           {/* 開始日時と終了日時をきれいにフォーマットして表示 */}
           <DateTime>

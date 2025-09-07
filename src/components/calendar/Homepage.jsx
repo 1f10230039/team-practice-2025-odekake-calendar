@@ -5,7 +5,9 @@ import styled from "@emotion/styled";
 // useStateフックインポート
 import { useState } from "react";
 // 日付比較用のisSameDayをインポート
-import { isSameDay, startOfDay } from "date-fns";
+import { isSameDay, startOfDay, isToday, format } from "date-fns";
+// 日本語表示のためjaをインポート！
+import { ja } from "date-fns/locale";
 // Calendarコンポーネントをインポート
 import Calendar from "./Calendar";
 // EventCardコンポーネントをインポート
@@ -25,6 +27,9 @@ const HomepageWrapper = styled.main`
 const EventListContainer = styled.div`
   width: 100%;
   max-width: 500px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f9f9f9;
 `;
 // イベント一覧の部分のスタイル
 const SectionTitle = styled.h2`
@@ -62,6 +67,11 @@ export default function Homepage({ events }) {
     return selectedDay >= eventStartDay && selectedDay <= eventEndDay;
   });
 
+  // 選択された日に合わせて、セクションのタイトルを動的に変更する
+  const sectionTitle = isToday(selectedDate)
+    ? "今日のイベント一覧"
+    : `${format(selectedDate, "M月d日", { locale: ja })}のイベント一覧`;
+
   return (
     <HomepageWrapper>
       {/* Calendarコンポーネントに、Homepageが管理している情報を渡す */}
@@ -72,7 +82,7 @@ export default function Homepage({ events }) {
       />
 
       <EventListContainer>
-        <SectionTitle>イベント一覧</SectionTitle>
+        <SectionTitle>{sectionTitle}</SectionTitle>
         {/* 絞り込んだイベントだけをEventCardで表示する */}
         {filteredEvents.length > 0 ? (
           filteredEvents.map(event => (
