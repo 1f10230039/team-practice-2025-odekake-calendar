@@ -24,7 +24,6 @@ import styled from "@emotion/styled";
 // --- Emotionでスタイルを定義 ---
 // カレンダー全体を包むスタイル
 const CalendarContainer = styled.div`
-  padding: 16px;
   background-color: #fff;
   width: 100%;
   max-width: 380px;

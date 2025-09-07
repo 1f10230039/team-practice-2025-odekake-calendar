@@ -82,21 +82,21 @@ const CategoryTag = styled.p`
 // 開催日時を表示する部分のスタイル
 const DateTime = styled.p`
   margin: 0 0 8px 0;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   color: #777;
 `;
 
 // 開催場所を表示する部分のスタイル
 const EventArea = styled.p`
   margin: 0 0 8px 0;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   color: #777;
 `;
 
 // 短い説明文のスタイル
 const Description = styled.p`
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.6rem;
   color: #555;
   line-height: 1.5;
 `;
