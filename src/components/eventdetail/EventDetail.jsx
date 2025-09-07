@@ -28,7 +28,7 @@ const DetailWrapper = styled.div`
 // 画像のスタイル
 const MainImage = styled.img`
   width: 100%;
-  height: 250px;
+  height: 400px;
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 24px;
@@ -38,7 +38,7 @@ const MainImage = styled.img`
 const Title = styled.h1`
   font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 2px;
   line-height: 1.4;
 `;
 // サブの情報を囲むdiv
@@ -53,6 +53,7 @@ const SubInfo = styled.div`
   /* アイコンとテキストを縦中央揃えにする */
   svg {
     margin-right: 4px;
+    margin-bottom: 4px;
     vertical-align: middle;
   }
 `;

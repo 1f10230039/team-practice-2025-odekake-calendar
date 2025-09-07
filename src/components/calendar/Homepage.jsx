@@ -2,16 +2,16 @@
 "use client";
 // Emotionのstyledをインポート
 import styled from "@emotion/styled";
-// useStateフックインポート
-import { useState } from "react";
+// Reactのフックインポート
+import { useState, useMemo } from "react";
 // 日付比較用のisSameDayをインポート
 import { isSameDay, startOfDay, isToday, format } from "date-fns";
 // 日本語表示のためjaをインポート！
 import { ja } from "date-fns/locale";
-// Calendarコンポーネントをインポート
+// 必要なコンポーネントをインポート
 import Calendar from "./Calendar";
-// EventCardコンポーネントをインポート
 import EventCard from "../ui/EventCard";
+import Filter from "../ui/Filter";
 
 // --- Emotionでスタイルを定義 ---
 // ホームページ全体を囲むコンテナースタイル
@@ -23,20 +23,26 @@ const HomepageWrapper = styled.main`
   margin-top: 60px;
   gap: 2rem;
 `;
-// イベントカードを囲むスタイル
-const EventListContainer = styled.div`
+// フィルターとイベント一覧をまとめるコンテナ
+const ContentContainer = styled.div`
   width: 100%;
   max-width: 500px;
   padding: 16px;
   border-radius: 12px;
   background-color: #f9f9f9;
 `;
-// イベント一覧の部分のスタイル
+// イベント一覧のタイトルとフィルターを囲むスタイル
+const TitleFilterContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  margin-bottom: 12px;
+`;
+// イベント一覧のタイトルのスタイル
 const SectionTitle = styled.h2`
   font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-  text-align: left;
 `;
 /**
  * カレンダー画面のメインとなるクライアントコンポーネント
@@ -49,25 +55,33 @@ export default function Homepage({ events }) {
   // 選択されている日付を管理する。初期値は今日の日付
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // カレンダーから日付がクリックされたことを受け取る関数
+  // フィルターされた後の観光地リストを管理するためのstate。初期値は全てのスポット
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  // --- 👇 日付を変更するための関数 ---
   const handleDateChange = date => {
     setSelectedDate(date);
   };
+  // --- 👇 カテゴリを変更するための関数 ---
+  const handleFilterChange = category => {
+    setSelectedCategory(category);
+  };
 
-  // 選択された日に開催されるイベントだけを絞り込む
-  const filteredEvents = events.filter(event => {
-    // 選択された日付の0時0分を取得（時間の影響をなくすため）
-    const selectedDay = startOfDay(selectedDate);
+  const filteredEvents = useMemo(() => {
+    const eventsOnSelectedDate = events.filter(event => {
+      const selectedDay = startOfDay(selectedDate);
+      const eventStartDay = startOfDay(new Date(event.start_datetime));
+      const eventEndDay = startOfDay(new Date(event.end_datetime));
+      return selectedDay >= eventStartDay && selectedDay <= eventEndDay;
+    });
+    if (selectedCategory === "all") {
+      return eventsOnSelectedDate;
+    }
+    return eventsOnSelectedDate.filter(
+      event => event.category === selectedCategory
+    );
+  }, [events, selectedDate, selectedCategory]);
 
-    // イベントの開始日と終了日の0時0分を取得
-    const eventStartDay = startOfDay(new Date(event.start_datetime));
-    const eventEndDay = startOfDay(new Date(event.end_datetime));
-
-    // 選択された日が、イベントの開始日以降 AND 終了日以前 であればtrueを返す
-    return selectedDay >= eventStartDay && selectedDay <= eventEndDay;
-  });
-
-  // 選択された日に合わせて、セクションのタイトルを動的に変更する
   const sectionTitle = isToday(selectedDate)
     ? "今日のイベント一覧"
     : `${format(selectedDate, "M月d日", { locale: ja })}のイベント一覧`;
@@ -81,9 +95,11 @@ export default function Homepage({ events }) {
         events={events}
       />
 
-      <EventListContainer>
-        <SectionTitle>{sectionTitle}</SectionTitle>
-        {/* 絞り込んだイベントだけをEventCardで表示する */}
+      <ContentContainer>
+        <TitleFilterContent>
+          <SectionTitle>{sectionTitle}</SectionTitle>
+          <Filter allEvents={events} onFilterChange={handleFilterChange} />
+        </TitleFilterContent>
         {filteredEvents.length > 0 ? (
           filteredEvents.map(event => (
             <EventCard key={event.id} event={event} />
@@ -91,7 +107,7 @@ export default function Homepage({ events }) {
         ) : (
           <p>この日のイベントはありません。</p>
         )}
-      </EventListContainer>
+      </ContentContainer>
     </HomepageWrapper>
   );
 }
