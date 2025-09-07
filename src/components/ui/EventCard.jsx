@@ -152,7 +152,7 @@ export default function EventCard({ event }) {
           <DateTime>
             {formatDateTime(start_datetime)} ~ {formatDateTime(end_datetime)}
           </DateTime>
-          <eventArea>{area}</eventArea>
+          <EventArea>{area}</EventArea>
           <Description>{short_description}</Description>
         </ContentWrapper>
       </CardWrapper>
