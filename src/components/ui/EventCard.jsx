@@ -86,6 +86,13 @@ const DateTime = styled.p`
   color: #777;
 `;
 
+// 開催場所を表示する部分のスタイル
+const EventArea = styled.p`
+  margin: 0 0 8px 0;
+  font-size: 0.8rem;
+  color: #777;
+`;
+
 // 短い説明文のスタイル
 const Description = styled.p`
   margin: 0;
@@ -107,22 +114,22 @@ const Description = styled.p`
  * @param {string} props.eventImageUrl - 観光地の画像URL
  * @returns {JSX.Element} レンダリングされる観光地カードコンポーネント
  */
-export default function EventCard({
-  eventId,
-  eventName,
-  eventArea,
-  eventCategory,
-  eventShortDescription,
-  eventStartDatetime,
-  eventEndDatetime,
-  eventImageUrl,
-}) {
+export default function EventCard({ event }) {
+  // eventオブジェクトから、必要な情報を取り出す
+  const {
+    id,
+    name,
+    area,
+    category,
+    short_description,
+    start_datetime,
+    end_datetime,
+    image_url,
+  } = event;
   // カテゴリ名に対応する背景色とボーダー色を取得する。なければ「その他」の色を使う
-  const bgColor =
-    categoryColors[eventCategory.category] || categoryColors["その他"];
-  const borderColor =
-    categoryBorderColors[eventCategory.category] ||
-    categoryBorderColors["その他"];
+  const categoryName = category || "その他";
+  const bgColor = categoryColors[categoryName];
+  const borderColor = categoryBorderColors[categoryName];
 
   // 日付のフォーマットを整える関数
   const formatDateTime = datetime => {
@@ -132,21 +139,21 @@ export default function EventCard({
   };
 
   return (
-    <Link href={`/event/${eventId}`}>
+    <Link href={`/event/${id}`}>
       {/* CardWrapperに、計算した色をpropsとして渡す */}
       <CardWrapper bgColor={bgColor} borderColor={borderColor}>
         {/* イベント画像を表示。altは画像が表示されない時のための説明文 */}
-        <EventImage src={eventImageUrl} alt={eventName} />
+        <EventImage src={image_url} alt={name} />
 
         <ContentWrapper>
-          <EventTitle>{eventName}</EventTitle>
-          <CategoryTag>{eventCategory || "その他"}</CategoryTag>
+          <EventTitle>{categoryName}</EventTitle>
+          <CategoryTag>{categoryName || "その他"}</CategoryTag>
           {/* 開始日時と終了日時をきれいにフォーマットして表示 */}
           <DateTime>
-            {formatDateTime(eventStartDatetime)} ~{" "}
-            {formatDateTime(eventEndDatetime)}
+            {formatDateTime(start_datetime)} ~ {formatDateTime(end_datetime)}
           </DateTime>
-          <Description>{eventShortDescription}</Description>
+          <eventArea>{area}</eventArea>
+          <Description>{short_description}</Description>
         </ContentWrapper>
       </CardWrapper>
     </Link>

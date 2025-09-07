@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 // useStateフックインポート
 import { useState } from "react";
 // 日付比較用のisSameDayをインポート
-import { isSameDay } from "date-fns";
+import { isSameDay, startOfDay } from "date-fns";
 // Calendarコンポーネントをインポート
 import Calendar from "./Calendar";
 // EventCardコンポーネントをインポート
@@ -50,9 +50,17 @@ export default function Homepage({ events }) {
   };
 
   // 選択された日に開催されるイベントだけを絞り込む
-  const filteredEvents = events.filter(event =>
-    isSameDay(new Date(event.start_datetime), selectedDate)
-  );
+  const filteredEvents = events.filter(event => {
+    // 選択された日付の0時0分を取得（時間の影響をなくすため）
+    const selectedDay = startOfDay(selectedDate);
+
+    // イベントの開始日と終了日の0時0分を取得
+    const eventStartDay = startOfDay(new Date(event.start_datetime));
+    const eventEndDay = startOfDay(new Date(event.end_datetime));
+
+    // 選択された日が、イベントの開始日以降 AND 終了日以前 であればtrueを返す
+    return selectedDay >= eventStartDay && selectedDay <= eventEndDay;
+  });
 
   return (
     <HomepageWrapper>
@@ -68,17 +76,7 @@ export default function Homepage({ events }) {
         {/* 絞り込んだイベントだけをEventCardで表示する */}
         {filteredEvents.length > 0 ? (
           filteredEvents.map(event => (
-            <EventCard
-              key={event.id}
-              eventId={event.id}
-              eventName={event.name}
-              eventCategory={event.category}
-              eventArea={event.area}
-              eventShortDescription={event.short_description}
-              eventStartDatetime={event.start_dattime}
-              eventEndDatetime={event.end_dattime}
-              eventImageUrl={event.image_url}
-            />
+            <EventCard key={event.id} event={event} />
           ))
         ) : (
           <p>この日のイベントはありません。</p>
