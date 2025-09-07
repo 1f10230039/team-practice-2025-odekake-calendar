@@ -4,6 +4,7 @@
 import styled from "@emotion/styled";
 // Next.jsのLinkをインポート
 import Link from "next/link";
+// usePathnameをインポート
 import { usePathname } from "next/navigation";
 // react-icons/fa から使いたいアイコンをインポート
 import { FaCalendarAlt, FaComments, FaUser } from "react-icons/fa";
@@ -38,14 +39,17 @@ const TabItem = styled(Link)`
   flex-grow: 1;
   height: 100%;
 
-  /* isActiveプロパティを受け取って、色を動的に変更する */
-  color: ${({ $isActive }) => ($isActive ? "#1877f2" : "#65676b")};
-  font-weight: ${({ $isActive }) => ($isActive ? "600" : "normal")};
-
-  /* 色が変わる時のアニメーション */
+  /* 通常時のスタイル */
+  color: #65676b;
+  font-weight: normal;
   transition: color 0.2s ease-in-out;
 
-  /* ホバーした時の変化 */
+  /* data-active属性がtrueの要素にだけ、このスタイルを適用する */
+  &[data-active="true"] {
+    color: #1877f2;
+    font-weight: 600;
+  }
+
   &:hover {
     color: #1877f2;
   }
@@ -57,7 +61,6 @@ const TabItem = styled(Link)`
  */
 export default function TabBar() {
   // usePathnameフックで、現在のページのURLを取得する
-  // 例: カレンダー画面なら "/"、チャット画面なら "/chat"
   const pathname = usePathname();
 
   // タブの情報を管理する配列
@@ -73,8 +76,8 @@ export default function TabBar() {
         <TabItem
           key={tab.href}
           href={tab.href}
-          // 現在のURL(pathname)とタブのリンク先(href)が一致したら、isActiveをtrueにする
-          isActive={pathname === tab.href}
+          // 現在のURL(pathname)とタブのリンク先(tab.href)が同じかどうかを判断して、結果を data-active に渡す
+          data-active={pathname === tab.href}
         >
           {tab.icon}
           <span>{tab.label}</span>
