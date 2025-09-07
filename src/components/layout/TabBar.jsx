@@ -39,8 +39,8 @@ const TabItem = styled(Link)`
   height: 100%;
 
   /* isActiveプロパティを受け取って、色を動的に変更する */
-  color: ${({ isActive }) => (isActive ? "#1877f2" : "#65676b")};
-  font-weight: ${({ isActive }) => (isActive ? "600" : "normal")};
+  color: ${({ $isActive }) => ($isActive ? "#1877f2" : "#65676b")};
+  font-weight: ${({ $isActive }) => ($isActive ? "600" : "normal")};
 
   /* 色が変わる時のアニメーション */
   transition: color 0.2s ease-in-out;
@@ -60,7 +60,7 @@ export default function TabBar() {
   // 例: カレンダー画面なら "/"、チャット画面なら "/chat"
   const pathname = usePathname();
 
-  // タブの情報を配列で管理すると、コードがスッキリするよ！
+  // タブの情報を管理する配列
   const tabs = [
     { href: "/", icon: <FaCalendarAlt size={22} />, label: "カレンダー" },
     { href: "/chat", icon: <FaComments size={22} />, label: "AIチャット" },

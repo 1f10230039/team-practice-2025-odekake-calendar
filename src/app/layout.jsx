@@ -4,8 +4,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 // Emotionのスタイルを管理するためのコンポーネントをインポート
 import EmotionRegistry from "@/components/EmotionRegistry";
-// サイト共通のヘッダーコンポーネントをインポート
+// サイト共通のヘッダーコンポーネントとタブバーコンポーネントをインポート
 import Header from "@/components/layout/Header";
+import TabBar from "@/components/layout/TabBar";
 
 // styled-componentsを使用してスタイルを定義
 // Interフォントを読み込み、サブセットとCSS変数を指定
@@ -36,6 +37,8 @@ export default function RootLayout({ children }) {
           <Header />
           {/* 各ページの内容がここにレンダリングされる */}
           <main>{children}</main>
+          {/* 共通タブバーを全ページに表示 */}
+          <TabBar />
         </body>
       </EmotionRegistry>
     </html>
