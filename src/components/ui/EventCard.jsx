@@ -1,0 +1,130 @@
+// クライアントサイドで動作することを宣言
+"use client";
+
+import styled from "@emotion/styled";
+// 日付のフォーマットを整えるためにdate-fnsからformatをインポート
+import { format } from "date-fns";
+// 日本語表示のためのロケールをインポート
+import { ja } from "date-fns/locale";
+
+// --- カテゴリごとの色の設定 ---
+const categoryColors = {
+  お祭り: "rgba(255, 193, 7, 0.1)", // 黄色っぽい背景
+  スポーツ: "rgba(40, 167, 69, 0.1)", // 緑っぽい背景
+  教育: "rgba(0, 123, 255, 0.1)", // 青っぽい背景
+  その他: "rgba(108, 117, 125, 0.1)", // グレーっぽい背景
+};
+const categoryBorderColors = {
+  お祭り: "#ffc107",
+  スポーツ: "#28a745",
+  教育: "#007bff",
+  その他: "#6c757d",
+};
+
+// --- Emotionでスタイル定義 ---
+// カード全体を囲むコンテナ。propsで色を受け取って背景色と左のボーダー色を変える
+const CardWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 175px;
+  border: 1px solid #e0e0e0;
+  border-left: 5px solid ${props => props.borderColor || "#e0e0e0"};
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: ${props => props.bgColor || "white"};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  text-align: left;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-3px);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+// 左側に表示するイベント画像のスタイル
+const EventImage = styled.img`
+  width: 130px;
+  height: 150px;
+  border-radius: 6px;
+  object-fit: cover;
+  margin-right: 16px;
+`;
+
+// 右側のテキスト情報をまとめるコンテナ
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
+// イベントタイトルのスタイル
+const EventTitle = styled.h3`
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+`;
+
+// カテゴリ名を表示するタグのスタイル
+const CategoryTag = styled.p`
+  margin: 0 0 8px 0;
+  font-size: 0.75rem;
+  color: #555;
+`;
+
+// 開催日時を表示する部分のスタイル
+const DateTime = styled.p`
+  margin: 0 0 8px 0;
+  font-size: 0.8rem;
+  color: #777;
+`;
+
+// 短い説明文のスタイル
+const Description = styled.p`
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.5;
+`;
+
+/**
+ * イベント情報を表示するカードコンポーネント
+ * @param {{ event: object }} props - 表示するイベントのデータ
+ */
+export default function EventCard({ event }) {
+  // カテゴリ名に対応する背景色とボーダー色を取得する。なければ「その他」の色を使う
+  const bgColor = categoryColors[event.category] || categoryColors["その他"];
+  const borderColor =
+    categoryBorderColors[event.category] || categoryBorderColors["その他"];
+
+  // 日付のフォーマットを整える関数
+  const formatDateTime = datetime => {
+    if (!datetime) return ""; // 日付がなければ空文字を返す
+    // 例: "9月8日(月) 10:00" のような形式に変換
+    return format(new Date(datetime), "M月d日(E) HH:mm", { locale: ja });
+  };
+
+  return (
+    // CardWrapperに、計算した色をpropsとして渡す
+    <CardWrapper bgColor={bgColor} borderColor={borderColor}>
+      {/* イベント画像を表示。altは画像が表示されない時のための説明文 */}
+      <EventImage src={event.image_url} alt={event.name} />
+
+      <ContentWrapper>
+        <EventTitle>{event.name}</EventTitle>
+        <CategoryTag>{event.category || "その他"}</CategoryTag>
+        {/* 開始日時と終了日時をきれいにフォーマットして表示 */}
+        <DateTime>
+          {formatDateTime(event.start_datetime)} ~{" "}
+          {formatDateTime(event.end_datetime)}
+        </DateTime>
+        <Description>{event.short_description}</Description>
+      </ContentWrapper>
+    </CardWrapper>
+  );
+}
