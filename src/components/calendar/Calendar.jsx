@@ -156,16 +156,33 @@ export default function Calendar({ selectedDate, onDateChange, events }) {
   const eventsByDate = useMemo(() => {
     // reduceは、配列を元に新しいオブジェクトや値を作り出すための機能
     return events.reduce((acc, event) => {
-      // イベントの日付を 'yyyy-MM-dd' 形式の文字列に変換する
-      const date = format(new Date(event.start_datetime), "yyyy-MM-dd");
-      // もし、新しいオブジェクト(acc)にその日付のキーがまだなければ、空の配列を作る
-      if (!acc[date]) {
-        acc[date] = [];
+      const startDate = new Date(event.start_datetime);
+      const endDate = new Date(event.end_datetime);
+
+      // startとendが有効な日付かチェックする（安全対策）
+      if (!isNaN(startDate) && !isNaN(endDate)) {
+        // eachDayOfIntervalで、イベント期間中のすべての日付を取得！
+        const datesInRange = eachDayOfInterval({
+          start: startDate,
+          end: endDate,
+        });
+
+        // 期間中の日付を一つずつループ処理
+        datesInRange.forEach(day => {
+          // 'yyyy-MM-dd'形式のキーを作成
+          const dateKey = format(day, "yyyy-MM-dd");
+
+          // その日付のキーがまだなければ、空の配列を作成
+          if (!acc[dateKey]) {
+            acc[dateKey] = [];
+          }
+          // カテゴリが重複しないように追加
+          if (!acc[dateKey].includes(event.category || "その他")) {
+            acc[dateKey].push(event.category || "その他");
+          }
+        });
       }
-      // 同じ日に同じカテゴリのドットが複数表示されないように、カテゴリ名が存在しない場合だけ追加する
-      if (!acc[date].includes(event.category)) {
-        acc[date].push(event.category || "その他");
-      }
+
       return acc; // 最終的に { '2025-09-08': ['祭り'], '2025-09-15': ['スポーツ', '教育'] } のようなオブジェクトが出来上がる
     }, {});
   }, [events]); // []の中にあるeventsが変わった時だけ、この中の処理が実行される
