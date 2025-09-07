@@ -2,6 +2,8 @@
 import { Inter } from "next/font/google";
 // サイト全体のグローバルCSSをインポート
 import "./globals.css";
+// Emotionのスタイルを管理するためのコンポーネントをインポート
+import EmotionRegistry from "@/components/EmotionRegistry";
 // サイト共通のヘッダーコンポーネントをインポート
 import Header from "@/components/layout/Header";
 
@@ -28,12 +30,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ja">
       {/* InterフォントのCSS変数をbodyタグに適用 */}
-      <body className={`${inter.variable}`}>
-        {/* 共通ヘッダーを全ページに表示 */}
-        <Header />
-        {/* 各ページの内容がここにレンダリングされる */}
-        <main>{children}</main>
-      </body>
+      <EmotionRegistry>
+        <body className={`${inter.variable}`}>
+          {/* 共通ヘッダーを全ページに表示 */}
+          <Header />
+          {/* 各ページの内容がここにレンダリングされる */}
+          <main>{children}</main>
+        </body>
+      </EmotionRegistry>
     </html>
   );
 }
