@@ -1,4 +1,4 @@
-// クライアントサイドで動作する
+// クライアントサイドで動作することを宣言
 "use client";
 // Emotionのstyledをインポート
 import styled from "@emotion/styled";
