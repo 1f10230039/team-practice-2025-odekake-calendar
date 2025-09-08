@@ -47,7 +47,7 @@ const UserIcon = styled.img`
 export default function Header() {
   return (
     <HeaderWrapper>
-      <Title>北区イベントカレンダー</Title>
+      <Title>港区イベントカレンダー</Title>
       <Link href="/setting" passHref>
         <UserIcon
           src="https://placehold.co/40x40/EFEFEF/3A3A3A?text=U"
