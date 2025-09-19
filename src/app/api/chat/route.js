@@ -57,7 +57,39 @@ export async function POST(request) {
     });
 
     const answer = completion.choices?.[0]?.message?.content ?? "";
-    return new Response(JSON.stringify({ answer, sources: chunks ?? [] }), {
+
+    // 類似度で関連度をフィルタ（INIAD RPCは similarity を返す想定）
+    const minSimilarity = Number(process.env.OPENAI_MIN_SIMILARITY ?? 0.55);
+    const filteredBySim = (chunks ?? []).filter(c => typeof c.similarity === "number" && c.similarity >= minSimilarity);
+
+    // event_idごとに最大類似度を採用し、重複排除
+    const idToBest = new Map();
+    for (const c of filteredBySim) {
+      const prev = idToBest.get(c.event_id);
+      if (!prev || (c.similarity ?? 0) > (prev.similarity ?? 0)) {
+        idToBest.set(c.event_id, c);
+      }
+    }
+    const filteredIds = Array.from(idToBest.keys()).slice(0, topK);
+
+    // 返却用に、候補イベントをeventsテーブルから取得して同梱（類似度も付与）
+    let suggestedEvents = [];
+    if (filteredIds.length > 0) {
+      const { data: eventsRows, error: eventsErr } = await supabaseServer
+        .from("events")
+        .select("id,name,image_url,start_datetime,end_datetime,area,website_url")
+        .in("id", filteredIds);
+      if (!eventsErr && Array.isArray(eventsRows)) {
+        suggestedEvents = eventsRows.map(ev => ({
+          ...ev,
+          similarity: idToBest.get(ev.id)?.similarity ?? null,
+        }))
+        // 類似度で降順
+        .sort((a, b) => (b.similarity ?? 0) - (a.similarity ?? 0));
+      }
+    }
+
+    return new Response(JSON.stringify({ answer, sources: filteredBySim, events: suggestedEvents }), {
       headers: { "content-type": "application/json" },
     });
   } catch (e) {
