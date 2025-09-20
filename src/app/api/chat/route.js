@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { supabaseServer } from "../../../../utils/supabase-server";
+import { supabaseServer } from "../../../../utils/supabase";
 
 export const runtime = "nodejs";
 
