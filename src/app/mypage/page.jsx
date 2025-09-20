@@ -41,18 +41,30 @@ export default function MyPage() {
 
   useEffect(() => {
     const checkUser = async () => {
-      // 現在のログインセッションを取得
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      try {
+        // 現在のログインセッションを取得
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
 
-      if (session) {
-        setUser(session.user);
-      } else {
-        // セッションがなければログインページへリダイレクト
+        // この時点でエラーがあれば、それはトークンが無いということ
+        if (error) throw error;
+
+        if (session) {
+          setUser(session.user);
+        } else {
+          // セッションがなければログインページへリダイレクト
+          router.push("/login");
+        }
+      } catch (error) {
+        // ここでエラーをキャッチ！
+        console.error("セッション取得エラー:", error.message);
+        // エラーが起きた場合もログインページへ飛ばす
         router.push("/login");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     checkUser();
